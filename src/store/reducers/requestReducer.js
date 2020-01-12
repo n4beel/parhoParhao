@@ -10,13 +10,15 @@ const requestReducer = (state = initState, action) => {
     switch (action.type) {
         case 'CREATE_REQUEST':
             console.log('request created: ', action.request);
-            break;
+            return state;
+
+        case 'CREATE_REQUEST_ERROR':
+            console.log('create request error ', action.err)
+            return state;
 
         default:
-            // console.log('nothing');
-            break;
+            return state;
     }
-    return state;
 }
 
 export default requestReducer;

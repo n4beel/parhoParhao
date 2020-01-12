@@ -4,9 +4,19 @@ import { createRequest } from '../store/actions/requestActions';
 import { connect } from 'react-redux';
 
 const options = [
-    { value: 'chocolate', label: 'Chocolate' },
-    { value: 'strawberry', label: 'Strawberry' },
-    { value: 'vanilla', label: 'Vanilla' },
+    { value: 'math', label: 'Math' },
+    { value: 'physics', label: 'Physics' },
+    { value: 'chemistry', label: 'Chemistry' },
+    { value: 'biology', label: 'Biology' },
+    { value: 'computerScience', label: 'Computer Science' },
+    { value: 'history', label: 'History' },
+    { value: 'grammar', label: 'Grammar' },
+    { value: 'economics', label: 'Economics' },
+    { value: 'finance', label: 'Finance' },
+    { value: 'business', label: 'Business' },
+    { value: 'socialSciences', label: 'Social Sciences' },
+    { value: 'arts', label: 'Arts' },
+    { value: 'humanities', label: 'Humnaities' },
 ];
 
 class CreateRequest extends Component {
@@ -14,7 +24,7 @@ class CreateRequest extends Component {
     state = {
         title: '',
         summary: '',
-        selectedOption: null,
+        tags: null,
     }
     handleSubmit = e => {
         e.preventDefault();
@@ -28,13 +38,13 @@ class CreateRequest extends Component {
         })
     }
 
-    handleSelectChange = selectedOption => {
-        this.setState({ selectedOption });
+    handleSelectChange = tags => {
+        this.setState({ tags });
     };
 
     render() {
 
-        const { selectedOption } = this.state;
+        const { tags } = this.state;
 
         return (
             <div className="container">
@@ -52,7 +62,7 @@ class CreateRequest extends Component {
 
                             <div className="form">
                                 <Select
-                                    value={selectedOption}
+                                    value={tags}
                                     onChange={this.handleSelectChange}
                                     options={options}
                                     isMulti={true}

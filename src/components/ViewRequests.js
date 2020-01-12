@@ -1,5 +1,8 @@
-import React from 'react'
-import { connect } from 'react-redux'
+import React from 'react';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { firestoreConnect } from 'react-redux-firebase';
+import { Link } from 'react-router-dom';
 
 const ViewRequests = props => {
 
@@ -24,15 +27,22 @@ const ViewRequests = props => {
 
                         {requests && requests.map(request => {
                             return (
-                                <li key={request.id}><a href="job-page.html">
+                                <li key={request.id}><Link to={'/request/' + request.id}>
                                     <div className="job-list-content">
                                         <h4>{request.title}</h4>
                                         <div className="job-icons">
-                                            <span className="request-tag">Full-Time</span>
+                                            {
+                                                request.tags && request.tags.map(tag => {
+                                                    return (
+                                                        <span key={tag.value} className="request-tag">{tag.label}</span>
+
+                                                    )
+                                                })
+                                            }
                                         </div>
                                         <p>{request.summary}</p>
                                     </div>
-                                </a>
+                                </Link>
                                     <div className="clearfix"></div>
                                 </li>
                             )
@@ -40,7 +50,7 @@ const ViewRequests = props => {
 
 
                     </ul>
-                    <div className="clearfix"></div>
+                    {/* <div className="clearfix"></div>
 
                     <div className="pagination-container">
                         <nav className="pagination">
@@ -59,7 +69,7 @@ const ViewRequests = props => {
                                 <li><a href="#" className="next">Next</a></li>
                             </ul>
                         </nav>
-                    </div>
+                    </div> */}
 
                 </div>
             </div>
@@ -68,9 +78,15 @@ const ViewRequests = props => {
 }
 
 const mapStateToProps = state => {
+    // console.log(state);
     return {
-        requests: state.request.requests,
+        requests: state.firestore.ordered.requests,
     }
 }
 
-export default connect(mapStateToProps)(ViewRequests);
+export default compose(
+    connect(mapStateToProps),
+    firestoreConnect([
+        { collection: 'requests' }
+    ])
+)(ViewRequests);
