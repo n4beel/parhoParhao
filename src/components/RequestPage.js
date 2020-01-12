@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import { compose } from 'redux';
+import { Redirect } from 'react-router-dom';
 
 const RequestPage = props => {
 
@@ -22,6 +23,9 @@ const RequestPage = props => {
         setModalState({ show: false });
         document.querySelector("body").style.overflow = "visible";
     }
+
+    const { auth } = props;
+    if (!auth.uid) return <Redirect to='/login' />
 
 
     if (request) {
@@ -132,7 +136,8 @@ const mapStateToProps = (state, ownProps) => {
     const requests = state.firestore.data.requests;
     const request = requests ? requests[id] : null;
     return {
-        request: request
+        request: request,
+        auth: state.firebase.auth
     }
 }
 

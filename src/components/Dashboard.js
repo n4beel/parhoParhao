@@ -1,15 +1,19 @@
 import React, { Component } from "react";
-import { Route, Switch, Link } from "react-router-dom";
+import { Route, Switch, Link, Redirect } from "react-router-dom";
 import RecentProposals from "./dashboardComponents/RecentProposals";
 import RecentRequests from "./dashboardComponents/RecentRequests";
 import PaymentGateway from "./dashboardComponents/PaymentGateway";
 import Settings from "./dashboardComponents/Settings";
 
 import Avatar from "./../assets/images/avatar-placeholder.png";
+// import { compose } from "redux";
 import { connect } from "react-redux";
 
 class Dashboard extends Component {
   render() {
+
+    const { auth } = this.props;
+    if (!auth.uid) return <Redirect to='/login' />
 
     return (
       <div className="container">
@@ -100,4 +104,10 @@ class Dashboard extends Component {
   }
 }
 
-export default Dashboard;
+const mapStateToProps = state => {
+  return {
+    auth: state.firebase.auth
+  }
+}
+
+export default connect(mapStateToProps)(Dashboard);

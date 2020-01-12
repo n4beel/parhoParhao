@@ -2,13 +2,16 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { firestoreConnect } from 'react-redux-firebase';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 
 const ViewRequests = props => {
 
     // console.log(props)
 
     const { requests } = props;
+
+    const { auth } = props;
+    if (!auth.uid) return <Redirect to='/login' />
 
     return (
         <div className="container">
@@ -81,6 +84,7 @@ const mapStateToProps = state => {
     // console.log(state);
     return {
         requests: state.firestore.ordered.requests,
+        auth: state.firebase.auth
     }
 }
 

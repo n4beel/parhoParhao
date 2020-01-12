@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 import { createRequest } from '../store/actions/requestActions';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 
 const options = [
     { value: 'math', label: 'Math' },
@@ -43,6 +44,9 @@ class CreateRequest extends Component {
     };
 
     render() {
+
+        const { auth } = this.props;
+        if (!auth.uid) return <Redirect to='/login' />
 
         const { tags } = this.state;
 
@@ -89,10 +93,16 @@ class CreateRequest extends Component {
     }
 }
 
+const mapStateToProps = state => {
+    return {
+        auth: state.firebase.auth
+    }
+}
+
 const mapDispatchToProcess = dispatch => {
     return {
         createRequest: request => dispatch(createRequest(request))
     }
 }
 
-export default connect(null, mapDispatchToProcess)(CreateRequest);
+export default connect(mapStateToProps, mapDispatchToProcess)(CreateRequest);
