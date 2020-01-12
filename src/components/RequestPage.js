@@ -3,14 +3,18 @@ import { connect } from 'react-redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import { compose } from 'redux';
 import { Redirect } from 'react-router-dom';
+import CreateProposal from './CreateProposal';
 
 const RequestPage = props => {
 
-    const { request } = props;
+    const { request, auth, role, proposals } = props;
 
     const [modalState, setModalState] = useState({ show: false })
 
     const showHideClassName = modalState.show ? 'modal display-block' : 'modal display-none';
+
+    const path = window.location.href;
+    const reqId = path.substring(path.lastIndexOf('/') + 1)
 
     // function to show the Proposal modal
     const showProposalModal = () => {
@@ -24,7 +28,6 @@ const RequestPage = props => {
         document.querySelector("body").style.overflow = "visible";
     }
 
-    const { auth } = props;
     if (!auth.uid) return <Redirect to='/login' />
 
 
@@ -92,24 +95,15 @@ const RequestPage = props => {
                                     </li>
                                 </ul>
 
-
-                                <a href="#" className="popup-with-zoom-anim button">Message Student</a>
+                                {
+                                    role === 'Scholar' ?
+                                        <button className="popup-with-zoom-anim button">Message Student</button>
+                                        : null
+                                }
 
                                 <div className={showHideClassName}>
-                                    <section className='modal-main zoom-anim-dialog apply-popup'>
-                                        <div className="small-dialog-headline">
-                                            <h2>Make a Proposal</h2>
-                                        </div>
+                                    <CreateProposal handler={hideProposalModal} />
 
-                                        <div className="small-dialog-content">
-                                            <form action="#" method="get">
-                                                <input type="text" placeholder="Enter the Payment Amount" />
-                                                <div className="divider"></div>
-                                                <button className="send">Propose</button>
-                                            </form>
-                                        </div>
-                                        <button onClick={hideProposalModal} title="Close (Esc)" type="button" className="mfp-close"></button>
-                                    </section>
                                 </div>
 
                             </div>
@@ -119,13 +113,62 @@ const RequestPage = props => {
                     </div>
 
 
+
                 </div>
+                {
+                    role === 'Student' ?
+                        <div className="container">
+                            <h4 className="section-heading">Received Proposals</h4>
+                            {
+                                proposals ?
+                                    proposals.map(proposal => {
+                                        return (
+                                            proposal.requestId === reqId ?
+                                                <div key={proposal.id} className="four columns">
+
+                                                    <div className="widget">
+
+                                                        <div className="job-overview">
+
+                                                            <ul>
+                                                                <li>
+                                                                    <i className="fa fa-map-marker"></i>
+                                                                    <div>
+                                                                        <strong>Scholar Name:</strong>
+                                                                        <span>{proposal.scholarName}</span>
+                                                                    </div>
+                                                                </li>
+                                                                <li>
+                                                                    <i className="fa fa-map-marker"></i>
+                                                                    <div>
+                                                                        <strong>Proposed Amount:</strong>
+                                                                        <span>{proposal.amount}</span>
+                                                                    </div>
+                                                                </li>
+                                                            </ul>
+
+                                                            <button className="popup-with-zoom-anim button">Message Scholar</button>
+                                                            <button className="popup-with-zoom-anim button">Accept Proposal</button>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                : null
+                                        )
+                                    })
+                                    : <div>No Proposals Received</div>
+                            }
+                        </div>
+                        : null
+                }
+
             </div>
         )
     }
     else {
         return (
-            <div>Loading...</div>
+            null
         )
     }
 
@@ -137,13 +180,16 @@ const mapStateToProps = (state, ownProps) => {
     const request = requests ? requests[id] : null;
     return {
         request: request,
-        auth: state.firebase.auth
+        auth: state.firebase.auth,
+        role: state.firebase.profile.role,
+        proposals: state.firestore.ordered.proposals
     }
 }
 
 export default compose(
     connect(mapStateToProps),
     firestoreConnect([
-        { collection: 'requests' }
+        { collection: 'requests' },
+        { collection: 'proposals' }
     ])
 )(RequestPage); 

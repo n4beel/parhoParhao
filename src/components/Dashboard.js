@@ -8,11 +8,17 @@ import Settings from "./dashboardComponents/Settings";
 import Avatar from "./../assets/images/avatar-placeholder.png";
 // import { compose } from "redux";
 import { connect } from "react-redux";
+import { changeUserRole } from "../store/actions/authActions";
 
 class Dashboard extends Component {
+
+  handleRoleChange = () => {
+    this.props.changeUserRole();
+  }
+
   render() {
 
-    const { auth } = this.props;
+    const { auth, profile } = this.props;
     if (!auth.uid) return <Redirect to='/login' />
 
     return (
@@ -28,19 +34,13 @@ class Dashboard extends Component {
               <li>
                 <div>
                   <strong>Name: </strong>
-                  <span>Nabeel Ahmed Khan</span>
+                  <span> {profile.name} </span>
                 </div>
               </li>
               <li>
                 <div>
                   <strong>Email: </strong>
-                  <span>nabeel-a-khan@outlook.com</span>
-                </div>
-              </li>
-              <li>
-                <div>
-                  <strong>Phone no: </strong>
-                  <span>+92 333 033 0889</span>
+                  <span> {profile.email} </span>
                 </div>
               </li>
               <li>
@@ -48,8 +48,12 @@ class Dashboard extends Component {
                   <strong>Role: </strong>
 
                   {/* will be visible according to role of the user */}
-                  <span>Scholar</span>
-                  <button className="role-button">Change to Student</button>
+                  <span> {profile.role} </span>
+                  {profile.role === 'Student' ?
+                    <button className="role-button" onClick={this.handleRoleChange}>Change to Scholar</button>
+                    :
+                    <button className="role-button" onClick={this.handleRoleChange}>Change to Student</button>
+                  }
                   {/* <span>Student</span>
                   <button className="role-button">Change to Scholar</button> */}
                 </div>
@@ -106,8 +110,15 @@ class Dashboard extends Component {
 
 const mapStateToProps = state => {
   return {
-    auth: state.firebase.auth
+    auth: state.firebase.auth,
+    profile: state.firebase.profile
   }
 }
 
-export default connect(mapStateToProps)(Dashboard);
+const mapDispatchToProps = dispatch => {
+  return {
+    changeUserRole: () => dispatch(changeUserRole())
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

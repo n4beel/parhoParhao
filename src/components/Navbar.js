@@ -2,8 +2,8 @@ import React from 'react';
 import Logo from './../assets/images/logo.png';
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux';
-import LoggedInList from '../navLists/LoggedInList';
-import LoggedOutList from '../navLists/LoggedOutList';
+import LoggedInList from './navLists/LoggedInList';
+import LoggedOutList from './navLists/LoggedOutList';
 
 
 const Navbar = props => {
@@ -38,6 +38,7 @@ const Navbar = props => {
 }
 
 const mapStateToProps = state => {
+    // console.log(state)
     return {
         auth: state.firebase.auth
     }

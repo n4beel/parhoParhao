@@ -21,13 +21,18 @@ class Login extends Component {
         })
     }
     render() {
-        const { auth } = this.props;
+        const { auth, authError } = this.props;
         if (auth.uid) return <Redirect to='/dashboard' />
 
         return (
             <div className="container">
                 <div className="small-margin"></div>
                 <div className="my-account">
+
+                    {authError ?
+                        <div className="notification error closeable">
+                            <p><span>Error!</span> {authError} </p>
+                        </div> : null}
 
                     <div className="tabs-container">
                         <div className="tab-content">

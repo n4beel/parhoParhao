@@ -1,6 +1,11 @@
 import React from 'react'
+import { compose } from 'redux';
+import { connect } from 'react-redux';
+import { firestoreConnect } from 'react-redux-firebase';
+import { Link } from 'react-router-dom';
 
-function RecentProposals() {
+const RecentProposals = props => {
+    const { proposals, userId } = props;
     return (
         <div className="container">
 
@@ -11,18 +16,27 @@ function RecentProposals() {
 
                     <thead>
                         <tr>
-                            <th><i className="fa fa-file-text"></i> Title</th>
-                            <th><i className="fa fa-calendar"></i> Request Date</th>
+                            <th><i className="fa fa-file-text"></i> Request</th>
+                            <th><i className="fa fa-calendar"></i> Proposed Amount</th>
                             <th><i className="fa fa-check-square-o"></i> Status</th>
 
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td className="title"><a href="#">Marketing Coordinator - SEO / SEM Experience</a></td>
-                            <td>September 30, 2015</td>
-                            <td >Active</td>
-                        </tr>
+
+                        {proposals && proposals.map(proposal => {
+                            return (
+                                userId === proposal.scholarId ?
+                                    <tr key={proposal.id}>
+                                        <td className="title"><Link to={'/request/' + proposal.requestId}>View Request</Link></td>
+                                        <td>{proposal.amount}</td>
+                                        <td >{proposal.status}</td>
+                                    </tr> : null
+                            )
+
+                        })}
+
+
                     </tbody>
 
 
@@ -38,4 +52,18 @@ function RecentProposals() {
     )
 }
 
-export default RecentProposals
+// export default RecentProposals
+
+const mapStateToProps = state => {
+    return {
+        proposals: state.firestore.ordered.proposals,
+        userId: state.firebase.auth.uid
+    }
+}
+
+export default compose(
+    connect(mapStateToProps),
+    firestoreConnect([
+        { collection: 'proposals' }
+    ])
+)(RecentProposals);

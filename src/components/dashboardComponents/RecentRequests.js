@@ -1,6 +1,13 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { Link } from 'react-router-dom';
+import { compose } from 'redux';
+import { firestoreConnect } from 'react-redux-firebase';
 
-function RecentRequests() {
+const RecentRequests = props => {
+
+    const { requests, userId } = props;
+
     return (
         <div className="container">
 
@@ -17,13 +24,19 @@ function RecentRequests() {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td className="title"><a href="#">Marketing Coordinator - SEO / SEM Experience</a></td>
-                            <td>September 30, 2015</td>
-                            <td className="centered"><a href="manage-applications.html" className="button">Show (4)</a></td>
-                            <td >Active</td>
+                        {requests && requests.map(request => {
+                            return (
+                                userId === request.studentId ?
+                                    <tr key={request.id}>
+                                        <td className="title"><Link to={'/request/' + request.id}>{request.title}</Link></td>
+                                        <td> {request.date} </td>
+                                        <td className="centered"><a href="manage-applications.html" className="button">Show ({request.proposals.length})</a></td>
+                                        <td >{request.status}</td>
+                                    </tr>
+                                    : null
+                            )
+                        })}
 
-                        </tr>
                     </tbody>
 
 
@@ -37,4 +50,16 @@ function RecentRequests() {
     )
 }
 
-export default RecentRequests
+const mapStateToProps = state => {
+    return {
+        requests: state.firestore.ordered.requests,
+        userId: state.firebase.auth.uid
+    }
+}
+
+export default compose(
+    connect(mapStateToProps),
+    firestoreConnect([
+        { collection: 'requests' }
+    ])
+)(RecentRequests);

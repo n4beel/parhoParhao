@@ -31,6 +31,7 @@ class CreateRequest extends Component {
         e.preventDefault();
         // console.log(this.state);
         this.props.createRequest(this.state);
+        this.props.history.push('/dashboard');
     }
 
     handleChange = e => {
@@ -99,10 +100,10 @@ const mapStateToProps = state => {
     }
 }
 
-const mapDispatchToProcess = dispatch => {
+const mapDispatchToProps = dispatch => {
     return {
         createRequest: request => dispatch(createRequest(request))
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProcess)(CreateRequest);
+export default connect(mapStateToProps, mapDispatchToProps)(CreateRequest);
