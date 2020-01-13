@@ -67,18 +67,22 @@ class Dashboard extends Component {
           <ul className="tabs-nav ">
             {/* visible only if user is scholar */}
             {/* <li><Link to="/dashboard">Profile</Link></li> */}
-            <li>
-              <Link to="/dashboard/proposals">Recent Propsals</Link>
-            </li>
-            <li>
-              <Link to="/dashboard/paymentGateway">Payment Gateway</Link>
-            </li>
-
-            {/* visible only if user is student */}
-            <li>
-              <Link to="/dashboard/requests">Recent Requests</Link>
-            </li>
-
+            {profile.role === 'Student' ?
+              <li>
+                <Link to="/dashboard/requests">Recent Requests</Link>
+              </li>
+              :
+              <li>
+                <Link to="/dashboard/proposals">Recent Propsals</Link>
+              </li>
+            }
+            {profile.role === 'Scholar' ?
+              <li>
+                <Link to="/dashboard/paymentGateway">Payment Gateway</Link>
+              </li>
+              :
+              null
+            }
             <li>
               <Link to="/dashboard">Settings</Link>
             </li>

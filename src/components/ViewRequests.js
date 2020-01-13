@@ -30,24 +30,26 @@ const ViewRequests = props => {
 
                         {requests && requests.map(request => {
                             return (
-                                <li key={request.id}><Link to={'/request/' + request.id}>
-                                    <div className="job-list-content">
-                                        <h4>{request.title}</h4>
-                                        <div className="job-icons">
-                                            {
-                                                request.tags && request.tags.map(tag => {
-                                                    return (
-                                                        <span key={tag.value} className="request-tag">{tag.label}</span>
+                                request.status === 'active' ?
+                                    <li key={request.id}><Link to={'/request/' + request.id}>
+                                        <div className="job-list-content">
+                                            <h4>{request.title}</h4>
+                                            <div className="job-icons">
+                                                {
+                                                    request.tags && request.tags.map(tag => {
+                                                        return (
+                                                            <span key={tag.value} className="request-tag">{tag.label}</span>
 
-                                                    )
-                                                })
-                                            }
+                                                        )
+                                                    })
+                                                }
+                                            </div>
+                                            <p>{request.summary}</p>
                                         </div>
-                                        <p>{request.summary}</p>
-                                    </div>
-                                </Link>
-                                    <div className="clearfix"></div>
-                                </li>
+                                    </Link>
+                                        <div className="clearfix"></div>
+                                    </li>
+                                    : null
                             )
                         })}
 

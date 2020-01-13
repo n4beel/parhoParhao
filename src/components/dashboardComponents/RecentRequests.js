@@ -30,7 +30,7 @@ const RecentRequests = props => {
                                     <tr key={request.id}>
                                         <td className="title"><Link to={'/request/' + request.id}>{request.title}</Link></td>
                                         <td> {request.date} </td>
-                                        <td className="centered"><a href="manage-applications.html" className="button">Show ({request.proposals.length})</a></td>
+                                        <td className="centered"><Link to={'/request/' + request.id} className="button">Show</Link></td>
                                         <td >{request.status}</td>
                                     </tr>
                                     : null

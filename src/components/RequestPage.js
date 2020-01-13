@@ -4,6 +4,9 @@ import { firestoreConnect } from 'react-redux-firebase';
 import { compose } from 'redux';
 import { Redirect } from 'react-router-dom';
 import CreateProposal from './CreateProposal';
+import ProposalCard from './ProposalCard';
+
+
 
 const RequestPage = props => {
 
@@ -48,10 +51,14 @@ const RequestPage = props => {
                                 }
                             </h2>
                         </div>
+                        {
+                            role === 'Scholar' ?
+                                <div className="six columns">
+                                    <button onClick={showProposalModal} className="button white">Make a Proposal</button>
+                                </div>
+                                : null
+                        }
 
-                        <div className="six columns">
-                            <button onClick={showProposalModal} className="button white">Make a Proposal</button>
-                        </div>
 
                     </div>
                 </div>
@@ -124,36 +131,9 @@ const RequestPage = props => {
                                     proposals.map(proposal => {
                                         return (
                                             proposal.requestId === reqId ?
-                                                <div key={proposal.id} className="four columns">
 
-                                                    <div className="widget">
+                                                <ProposalCard key={proposal.id} proposal={proposal} reqId={reqId} />
 
-                                                        <div className="job-overview">
-
-                                                            <ul>
-                                                                <li>
-                                                                    <i className="fa fa-map-marker"></i>
-                                                                    <div>
-                                                                        <strong>Scholar Name:</strong>
-                                                                        <span>{proposal.scholarName}</span>
-                                                                    </div>
-                                                                </li>
-                                                                <li>
-                                                                    <i className="fa fa-map-marker"></i>
-                                                                    <div>
-                                                                        <strong>Proposed Amount:</strong>
-                                                                        <span>{proposal.amount}</span>
-                                                                    </div>
-                                                                </li>
-                                                            </ul>
-
-                                                            <button className="popup-with-zoom-anim button">Message Scholar</button>
-                                                            <button className="popup-with-zoom-anim button">Accept Proposal</button>
-
-                                                        </div>
-
-                                                    </div>
-                                                </div>
                                                 : null
                                         )
                                     })
@@ -186,10 +166,12 @@ const mapStateToProps = (state, ownProps) => {
     }
 }
 
+
+
 export default compose(
     connect(mapStateToProps),
     firestoreConnect([
         { collection: 'requests' },
         { collection: 'proposals' }
     ])
-)(RequestPage); 
+)(RequestPage);

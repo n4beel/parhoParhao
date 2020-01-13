@@ -7,7 +7,7 @@ export const createRequest = request => {
 
         firestore.collection('requests').add({
             ...request,
-            proposals: [],
+            proposalCount: 0,
             status: 'active',
             studentId: studentId,
             studentName: studentName,
@@ -41,7 +41,7 @@ export const createProposal = proposal => {
             scholarName,
             scholarId,
             requestId,
-            status: 'Active'
+            status: 'pending'
         }).then(() => {
             dispatch({
                 type: 'CREATE_PROPOSAL',
@@ -52,6 +52,32 @@ export const createProposal = proposal => {
                 type: 'CREATE_PROPOSAL_ERR',
                 err
             })
+        })
+    }
+}
+
+export const acceptProposal = accepted => {
+    return (dispatch, getState, { getFirebase, getFirestore }) => {
+        const firestore = getFirestore();
+        const proposals = getState().firestore.ordered.proposals;
+
+        proposals.forEach(proposal => {
+            if (accepted.reqId === proposal.requestId) {
+                if (accepted.proposalId === proposal.id) {
+                    firestore.collection('proposals').doc(proposal.id).update('status', 'accepted').then(() => {
+                        console.log('accepted proposal status updated')
+                    })
+                }
+                else {
+                    firestore.collection('proposals').doc(proposal.id).update('status', 'rejected').then(() => {
+                        console.log('rejected proposal status updated')
+                    })
+                }
+            }
+        });
+
+        firestore.collection('requests').doc(accepted.reqId).update('status', 'pending').then(() => {
+            console.log('request status updated')
         })
     }
 }
